@@ -1,2 +1,3 @@
-streamlit-webrtc
-opencv-python-headless
+langchain_core
+langchain
+SpeechRecognition
