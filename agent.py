@@ -31,7 +31,8 @@ class Extractor:
         # 2. Each field has a `description` -- this description is used by the LLM.
         # Having a good description can help improve extraction results.
         screen: Optional[str] = Field(default=None, description="The screen that the user should be directed to.")
-        
+        jobsite: Optional[str] = Field(default=None, description="The jobsite/property/building that the user is located in or interested in.")
+        area: Optional[str] = Field(default=None, description="The area/room of the jobsite/property/building that the user is located in or interested in.")
 
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
@@ -93,7 +94,7 @@ class Extractor:
             examples = [
                 (
                     "I'm in overmountain inn room 203 and there's a bath with a crack in it",
-                    Extractor.State(screen="create_event"),
+                    Extractor.State(screen="create_event", jobsite="Overmountain Inn", area="Room 203"),
                 ),
                 (
                     "Take me home",
@@ -104,6 +105,7 @@ class Extractor:
                     Extractor.State(screen="create_event"),
                 ),
             ]
+        # Do all this later when we want to prompt for "What jobsite are you at"
         else:
             examples = [
                 (
@@ -154,7 +156,7 @@ class Extractor:
         openai_api_key = st.secrets["open_ai_api"]
 
         llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key = openai_api_key)
-
+        
         runnable = prompt | llm.with_structured_output(
             schema=Extractor.State,
             method="function_calling",
