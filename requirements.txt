@@ -1,4 +1,5 @@
 langchain_core
 langchain
-SpeechRecognition
 openai
+pydantic
+langchain_openai
