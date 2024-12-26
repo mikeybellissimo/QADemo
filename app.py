@@ -18,7 +18,7 @@ if "initialized" not in st.session_state:
 
     # App Operations Information
     st.session_state['initialized'] = True
-    st.session_state["screen"] = "home"
+    st.session_state["screen"] = "create_event"
     st.session_state["next_missing_data"] = None
     st.session_state["new_event_images"] = []
     st.session_state["new_event_description_raw"] = ""
