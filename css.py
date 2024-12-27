@@ -23,6 +23,11 @@ def run_css():
             width: 25%; 
         }
         
+        .st-key-doneButton > .stButton > button {
+            background-color: #228B22;
+            width: 100%;
+        }
+
         .st-emotion-cache-yw8pof {
             width: 100%;
             padding: 3rem 0rem 10rem;

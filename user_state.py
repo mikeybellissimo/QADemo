@@ -16,7 +16,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
 
-class Extractor:
+class StateExtractor:
 
     
 
@@ -33,7 +33,8 @@ class Extractor:
         screen: Optional[str] = Field(default=None, description="The screen that the user should be directed to.")
         jobsite: Optional[str] = Field(default=None, description="The jobsite/property/building that the user is located in or interested in.")
         area: Optional[str] = Field(default=None, description="The area/room of the jobsite/property/building that the user is located in or interested in.")
-
+        issue_description: Optional[str] = Field(default=None, description="This is the description of an issue that a user provides, if the user provides one.")
+        
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 
@@ -94,15 +95,15 @@ class Extractor:
             examples = [
                 (
                     "I'm in overmountain inn room 203 and there's a bath with a crack in it",
-                    Extractor.State(screen="create_event", jobsite="Overmountain Inn", area="Room 203"),
+                    StateExtractor.State(screen="create_event", jobsite="Overmountain Inn", area="Room 203"),
                 ),
                 (
                     "Take me home",
-                    Extractor.State(screen="create_event"),
+                    StateExtractor.State(screen="create_event"),
                 ),
                 (
                     "I want to verify some tasks",
-                    Extractor.State(screen="create_event"),
+                    StateExtractor.State(screen="create_event"),
                 ),
             ]
         # Do all this later when we want to prompt for "What jobsite are you at"
@@ -111,17 +112,17 @@ class Extractor:
                 (
                     "Requested Data: number_of_floors. \n"
                     "A blue 4 story hotel with 804 rooms",
-                    Extractor.Building(number_of_floors=4, number_of_rooms=804),
+                    StateExtractor.Building(number_of_floors=4, number_of_rooms=804),
                 ),
                 (
                     "Requested Data: number_of_floors. \n"
                     "63",
-                    Extractor.Building(number_of_floors=63),
+                    StateExtractor.Building(number_of_floors=63),
                 ),
                 (
                     "Requested Data: number_of_rooms. \n"
                     "42",
-                    Extractor.Building(number_of_rooms=42),
+                    StateExtractor.Building(number_of_rooms=42),
                 ),
             ]
 
@@ -131,7 +132,7 @@ class Extractor:
 
         for text, tool_call in examples:
             messages.extend(
-                Extractor.tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
+                StateExtractor.tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
             )
 
         
@@ -158,7 +159,7 @@ class Extractor:
         llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key = openai_api_key)
         
         runnable = prompt | llm.with_structured_output(
-            schema=Extractor.State,
+            schema=StateExtractor.State,
             method="function_calling",
             include_raw=False,
         )
@@ -174,6 +175,6 @@ class Extractor:
             if new_values[dict_key] != None:
                 
                 
-                st.session_state[dict_key] = new_values[dict_key]
+                st.session_state.user_state[dict_key] = new_values[dict_key]
 
 

@@ -3,4 +3,3 @@ langchain
 openai
 pydantic
 langchain_openai
-streamlit-back-camera-input
