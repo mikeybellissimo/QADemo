@@ -34,7 +34,7 @@ class StateExtractor:
         jobsite: Optional[str] = Field(default=None, description="The jobsite/property/building that the user is located in or interested in.")
         area: Optional[str] = Field(default=None, description="The area/room of the jobsite/property/building that the user is located in or interested in.")
         issue_description: Optional[str] = Field(default=None, description="This is the description of an issue that a user provides, if the user provides one.")
-        
+    
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 

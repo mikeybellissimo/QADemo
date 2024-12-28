@@ -27,6 +27,7 @@ if "initialized" not in st.session_state:
     st.session_state.new_issue["action_to_resolve"] = ""
     st.session_state.new_issue["new_event_images"] = []
     st.session_state.new_issue["new_event_description_raw"] = ""
+    st.session_state.new_issue["due_datetime"] = ""
 
     # App Operations Information
     st.session_state['initialized'] = True

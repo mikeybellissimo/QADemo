@@ -8,7 +8,7 @@ def create_event_page():
         
 
     recent_picture = st.camera_input(label="Take a picture of an issue", label_visibility="hidden", key=f"camera_{st.session_state.camera_clear_hack}")
-
+    
 
     audio = st.audio_input("Describe the Issue", key=f"audio_{st.session_state.audio_input_hack}")
     

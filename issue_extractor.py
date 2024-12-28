@@ -14,6 +14,7 @@ from langchain_core.messages import (
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
+from datetime import datetime, timedelta
 
 
 class IssueExtractor:
@@ -31,7 +32,8 @@ class IssueExtractor:
         description: Optional[str] = Field(default=None, description="A summary of the raw description provided by the user. It should include all relevant facts and exclude anything unrelated to the issue. It should sound professional.")
         classification: Optional[str] = Field(default=None, description="A classification of the subject of the described issue. The only possible values are: [Entry door, Internal door, Bathroom, Walls, Flooring, Ceiling, Furniture, Appliances, Window]. If the subject of the issue does not fall into one of these categories, assign 'Other'.")
         action_to_resolve: Optional[str] = Field(default=None, description="A classification of the appropriate action required to resolve the described issue. The only possible values are [Fix, Maintain, Replace, Review]. 'Review' should only be chosen if the user indicates it directly or if he appears uncertain to whether it will be an issue or not. If the issue is something that is not able to be resolved by easily fixing or maintaining it, such as a window with extensive glass damage, then it must be replaced.")
-        
+        due_datetime: Optional[str] = Field(default=None, description="The datetime the user specifies for when the issue must be resolved, if provided. The datetime should be specified as a string with the following format YYYY-MM-DDTHH:MM.")
+
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 
@@ -91,8 +93,9 @@ class IssueExtractor:
         if st.session_state.next_missing_data == None:
             examples = [
                 (
-                    "I'm in overmountain inn room 203 and there's a bath with a fucking big ass crack in it and the water pours out when you turn it on",
-                    IssueExtractor.Issue(name="Cracked Bath", description= "The bath has a large crack in it, allowing water to fall through.", classification="Bathroom", action_to_resolve="Replace"),
+                    "I'm in overmountain inn room 203 and there's a bath with a fucking big ass crack in it and the water pours out when you turn it on. This needs to be fixed by noon tomorrow.",
+                    # The crazy code for setting due_datetime just returns out "noon tomorrow" in the expected format.
+                    IssueExtractor.Issue(name="Cracked Bath", description= "The bath has a large crack in it, allowing water to fall through.", classification="Bathroom", action_to_resolve="Replace", due_datetime=datetime.strptime(str(datetime.now() + timedelta(hours=24))[:10] + "T12:00", "%Y-%m-%dT%H:%M").strftime("%Y-%m-%dT%H:%M")),
                 ),
                 (
                     "There's a massive hole in the ceiling on the south east corner of the room.",
@@ -129,7 +132,7 @@ class IssueExtractor:
 
         for text, tool_call in examples:
             messages.extend(
-                IssueExtractor.tool_example_to_messages({"input": "User Provided Description: " + text, "tool_calls": [tool_call]})
+                IssueExtractor.tool_example_to_messages({"input": "Current Datetime: " + str(datetime.now().strftime("%Y-%m-%dT%H:%M")) + "\n User Provided Description: " + text, "tool_calls": [tool_call]})
             )
 
         
@@ -148,7 +151,7 @@ class IssueExtractor:
                 # ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
                 MessagesPlaceholder("examples"),  # <-- EXAMPLES!
                 # ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-                ("human", "User Provided Description: {text}"),
+                ("human", "Current Datetime: " + str(datetime.now().strftime("%Y-%m-%dT%H:%M")) + "\n User Provided Description: {text}"),
             ]
         )
         
