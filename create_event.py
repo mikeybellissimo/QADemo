@@ -1,5 +1,4 @@
 import streamlit as st
-import tempfile 
 from speech import speech_to_text
 from issue_extractor import IssueExtractor
 def create_event_page():
@@ -8,12 +7,13 @@ def create_event_page():
         
 
     recent_picture = st.camera_input(label="Take a picture of an issue", label_visibility="hidden", key=f"camera_{st.session_state.camera_clear_hack}")
-    
+
 
     audio = st.audio_input("Describe the Issue", key=f"audio_{st.session_state.audio_input_hack}")
     
     done_button = st.button("Done", key="doneButton")
     if audio:
+        st.session_state.new_issue["audio"] = audio
         st.session_state.new_issue["new_event_description_raw"] += speech_to_text(audio)
         st.session_state.audio_input_hack += 1 
 

@@ -16,18 +16,19 @@ if "initialized" not in st.session_state:
     st.session_state["user_state"] = {}
     st.session_state.user_state["area"] = None
     st.session_state.user_state["jobsite"] = None
-    st.session_state.user_state["screen"] = "home"
+    st.session_state.user_state["screen"] = "create_event"
     st.session_state.user_state["issue_description"] = None
     
     # Create New Issue State
     st.session_state["new_issue"] = {}
-    st.session_state.new_issue["name"] = ""
-    st.session_state.new_issue["description"] = ""
-    st.session_state.new_issue["classification"] = ""
-    st.session_state.new_issue["action_to_resolve"] = ""
+    st.session_state.new_issue["name"] = None
+    st.session_state.new_issue["description"] = None
+    st.session_state.new_issue["classification"] = None
+    st.session_state.new_issue["action_to_resolve"] = None
     st.session_state.new_issue["new_event_images"] = []
     st.session_state.new_issue["new_event_description_raw"] = ""
-    st.session_state.new_issue["due_datetime"] = ""
+    st.session_state.new_issue["due_datetime"] = None
+    st.session_state.new_issue["audio"] = None
 
     # App Operations Information
     st.session_state['initialized'] = True
@@ -45,6 +46,7 @@ navbar = custom_components.navbar()
 if st.session_state.user_state["screen"] == "home":
     audio = st.audio_input("Voice Assistant", key=f"audio_{st.session_state.audio_input_hack}")
     if audio:
+        st.session_state.new_issue["audio"] = audio
         StateExtractor.extract(speech_to_text(audio))
         st.session_state.audio_input_hack += 1 
         st.rerun()
