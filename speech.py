@@ -1,6 +1,5 @@
 import streamlit as st
 import tempfile
-import time
 import openai
 
 
@@ -18,7 +17,6 @@ def call_speech_api(audio_path):
 
 
 def speech_to_text(audio):
-    file_name = "output.wav"
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp:
         tmp.write(audio.getvalue())

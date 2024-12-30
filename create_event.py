@@ -1,11 +1,25 @@
 import streamlit as st
 from speech import speech_to_text
 from issue_extractor import IssueExtractor
+from user_state import StateExtractor
 def create_event_page():
     def get_modified_raw_description():
         st.session_state.new_issue["new_event_description_raw"] = st.session_state["raw_description_text_area"]
+    
+    @st.dialog("Set Location")
+    def prompt_for_location():
+        location_audio = st.audio_input("Describe the Issue", label_visibility="hidden", key=f"audio_{st.session_state.audio_input_hack}")
+        if location_audio:
+            StateExtractor.extract(speech_to_text(location_audio))
+            st.session_state.audio_input_hack += 1
+            st.rerun()
+        jobsite_input_text = st.text_input("Jobsite", value=str(st.session_state.user_state['jobsite']))
+        area_input_text = st.text_input("Area", value=str(st.session_state.user_state['area']))
+        
         
 
+    if st.session_state.user_state['jobsite'] == None or st.session_state.user_state['area'] == None:
+        prompt_for_location()
     recent_picture = st.camera_input(label="Take a picture of an issue", label_visibility="hidden", key=f"camera_{st.session_state.camera_clear_hack}")
 
 
