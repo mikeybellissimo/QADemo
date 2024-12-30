@@ -10,13 +10,17 @@ def view_edit_page():
     else:
         due_dt = st.session_state.new_issue["due_datetime"]
     st.write("Due Date: " + str(due_dt))
-
+    
     if st.session_state.new_issue["audio"] == None:
-        audio = st.audio_input("Voice Assistant", key=f"audio_{st.session_state.audio_input_hack}")
+        audio = st.audio_input("Attach Audio", key=f"audio_{st.session_state.audio_input_hack}")
         if audio:
             st.session_state.new_issue["audio"] = audio
     else:
         st.audio(st.session_state.new_issue["audio"])
-    for im in st.session_state.new_issue["new_event_images"]:
+    for im, ind in zip(st.session_state.new_issue["new_event_images"], range(len(st.session_state.new_issue["new_event_images"]))):
         st.image(im)
+        if st.button("Delete", key="removeButton" + str(ind)):
+            del st.session_state.new_issue["new_event_images"][ind]
+            st.rerun()
+        
     

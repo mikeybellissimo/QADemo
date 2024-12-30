@@ -26,6 +26,12 @@ def run_css():
         .st-key-doneButton > .stButton > button {
             background-color: #228B22;
             width: 100%;
+            color: #FFF;
+        }
+        div[class*='st-key-removeButton'] > .stButton > button {
+            background-color: #ff2800;
+            width: 100%;
+            color: #FFF;
         }
 
         .st-emotion-cache-yw8pof {
