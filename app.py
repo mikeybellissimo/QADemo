@@ -35,6 +35,7 @@ if "initialized" not in st.session_state:
     st.session_state["next_missing_data"] = None
     st.session_state['camera_clear_hack'] = 0
     st.session_state['audio_input_hack']= 0
+    st.session_state['location_audio_input_hack']= 0
 
 # Top of every screen 
 navbar = custom_components.navbar()
