@@ -21,7 +21,7 @@ def create_event_page():
     done_button = st.button("Review", key="doneButton")
     if audio:
         st.session_state.new_issue["audio"] = audio
-        st.session_state.new_issue["new_event_description_raw"] += speech_to_text(audio)
+        st.session_state.new_issue["new_event_description_raw"] += " " + speech_to_text(audio)
         st.session_state.audio_input_hack += 1 
 
     if recent_picture:

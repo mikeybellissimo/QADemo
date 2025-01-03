@@ -12,10 +12,9 @@ def prompt_for_location():
         st.rerun()
     jobsite_input_text = st.text_input("Jobsite", value=str(st.session_state.user_state['jobsite']))
     area_input_text = st.text_input("Area", value=str(st.session_state.user_state['area']))
-    location_done_button = st.button("Done", key="doneButton" + str(st.session_state.location_audio_input_hack))
+    location_done_button = st.button("Done", key="doneButton" + "Location")
     if location_done_button:
-        print(jobsite_input_text)
-        print(area_input_text)
+        
         if jobsite_input_text != "None":
             st.session_state.user_state['jobsite'] = jobsite_input_text
         if area_input_text != "None":
