@@ -4,4 +4,4 @@ openai
 pydantic
 langchain_openai
 sqlite
-SQLAlchemy==1.4.0
+SQLAlchemy
