@@ -3,5 +3,4 @@ langchain
 openai
 pydantic
 langchain_openai
-sqlite
 SQLAlchemy
