@@ -34,7 +34,7 @@ class StateExtractor:
         jobsite: Optional[str] = Field(default=None, description="The jobsite/property/building that the user is located in or interested in.")
         area: Optional[str] = Field(default=None, description="The area/room of the jobsite/property/building that the user is located in or interested in.")
         issue_description: Optional[str] = Field(default=None, description="This is the description of an issue that a user provides, if the user provides one.")
-    
+
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 
@@ -99,11 +99,11 @@ class StateExtractor:
                 ),
                 (
                     "Take me home",
-                    StateExtractor.State(screen="create_event"),
+                    StateExtractor.State(screen="home"),
                 ),
                 (
-                    "I want to verify some tasks",
-                    StateExtractor.State(screen="create_event"),
+                    "Show me my current tasks",
+                    StateExtractor.State(screen="display_tasks"),
                 ),
             ]
         # Do all this later when we want to prompt for "What jobsite are you at"
@@ -142,7 +142,9 @@ class StateExtractor:
                     "system",
                     "You are an expert extraction algorithm that extracts information for an application that facilitates building inspections. "
                     "You must figure out what screen of the app the user wishes to go to. "
-                    "Select one of the following options: home, create_event, verify_event"
+                    "Select one of the following options: home, create_event, display_tasks. "
+                    "Also see if the user references a jobsite and/or area within the jobsite. \n"
+                    "If an issue is referenced then briefly describe the relevant facts. "
                     "Only extract relevant information from the text. "
                     "If you do not know the value of an attribute asked "
                     "to extract, return null for the attribute's value.",

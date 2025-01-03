@@ -23,7 +23,13 @@ def run_css():
             width: 25%; 
         }
         
-        .st-key-doneButton > .stButton > button {
+                
+        .st-key-locationHeader > .stElementContainer > .stButton > button {
+            width : 100%;
+            background-color: #f99f20;
+        }
+            
+        div[class*='st-key-doneButton'] > .stButton > button {
             background-color: #228B22;
             width: 100%;
             color: #FFF;
@@ -34,6 +40,11 @@ def run_css():
             color: #FFF;
         }
 
+        .stCameraInput > label {
+            min-height: 0;
+            height : 0;
+        }
+        
         .st-emotion-cache-yw8pof {
             width: 100%;
             padding: 3rem 0rem 10rem;

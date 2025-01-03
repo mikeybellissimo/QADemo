@@ -1,10 +1,13 @@
 import streamlit as st
 from view_edit_event import view_edit_page
 from create_event import create_event_page
+from display_tasks import display_tasks_page
 from css import run_css
 import custom_components
 from speech import speech_to_text
 from user_state import StateExtractor
+import pandas as pd 
+
 
 # app setup
 run_css()
@@ -14,9 +17,9 @@ run_css()
 if "initialized" not in st.session_state:
     # User State Information
     st.session_state["user_state"] = {}
-    st.session_state.user_state["area"] = None
-    st.session_state.user_state["jobsite"] = None
-    st.session_state.user_state["screen"] = "home"
+    st.session_state.user_state["area"] = "Room 203"
+    st.session_state.user_state["jobsite"] = "Overmountain Inn"
+    st.session_state.user_state["screen"] = "display_tasks"
     st.session_state.user_state["issue_description"] = None
     
     # Create New Issue State
@@ -37,10 +40,12 @@ if "initialized" not in st.session_state:
     st.session_state['audio_input_hack']= 0
     st.session_state['location_audio_input_hack']= 0
 
+    
+
+
+
 # Top of every screen 
 navbar = custom_components.navbar()
-
-
 
 
 #Routing 
@@ -57,6 +62,9 @@ if st.session_state.user_state["screen"] == "create_event":
 
 if st.session_state.user_state["screen"] == "view_edit":
     view_edit_page()
+
+if st.session_state.user_state['screen'] == "display_tasks":
+    display_tasks_page()
 
 # Example input
 # There is a big ass crack on the tv screen. The things still working thankfully but it looks like we got it that way when they shipped it. We should see if we can get a manufacturing warranty
