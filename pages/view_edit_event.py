@@ -43,7 +43,7 @@ def view_edit_page():
         with conn.session as s: 
             s.execute(
                 text('INSERT INTO issues (name, description, classification, action_to_resolve, due_datetime, jobsite, area) VALUES (:name, :description, :classification, :action_to_resolve, :due_datetime, :jobsite, :area);'),
-                params=dict(name=st.session_state.new_issue["name"], description=st.session_state.new_issue["description"], classification=st.session_state.new_issue["classification"], action_to_resolve=st.session_state.new_issue["action_to_resolve"], due_datetime=st.session_state.new_issue["due_datetime"], jobsite=st.session_state.user_state["jobsite"], area=st.session_state.user_state["area"])
+                params=dict(name=st.session_state.new_issue["name"], description=st.session_state.new_issue["description"], classification=st.session_state.new_issue["classification"], action_to_resolve=st.session_state.new_issue["action_to_resolve"], due_datetime=st.session_state.new_issue["due_datetime"], jobsite=st.session_state.location["jobsite"], area=st.session_state.location["area"])
             )
             s.commit()
         st.session_state.user_state['screen'] = "display_tasks"

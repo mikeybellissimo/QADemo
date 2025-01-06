@@ -11,7 +11,7 @@ def create_event_page():
     
         
     
-    if st.session_state.user_state['jobsite'] == None or st.session_state.user_state['area'] == None:
+    if st.session_state.location['jobsite'] == None or st.session_state.location['area'] == None:
         prompt_for_location()
     
     recent_picture = st.camera_input(label="Take a picture of an issue", label_visibility="hidden", key=f"camera_{st.session_state.camera_clear_hack}")

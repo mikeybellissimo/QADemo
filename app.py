@@ -6,6 +6,7 @@ from css import run_css
 import custom_components
 from speech import speech_to_text
 from extractors.user_state_extractor import StateExtractor
+from extractors.location_extractor import LocationExtractor
 
 # app setup
 run_css()
@@ -14,13 +15,13 @@ run_css()
 if "initialized" not in st.session_state:
     # User State Information
     st.session_state["user_state"] = {}
-    st.session_state.user_state["area"] = "Lobby"
-    st.session_state.user_state["jobsite"] = "Overmountain Inn"
     st.session_state.user_state["screen"] = "display_tasks"
     st.session_state.user_state["issue_description"] = None
     
     # Location Information
-    
+    st.session_state["location"] = {}
+    st.session_state.location["jobsite"] = "Overmountain Inn"
+    st.session_state.location["area"] = "Lobby"
 
     # Create New Issue State
     st.session_state["new_issue"] = {}
@@ -54,6 +55,7 @@ if st.session_state.user_state["screen"] == "home":
     if audio:
         st.session_state.new_issue["audio"] = audio
         StateExtractor.extract(speech_to_text(audio))
+        LocationExtractor.extract(speech_to_text(audio))
         st.session_state.audio_input_hack += 1 
         st.rerun()
 

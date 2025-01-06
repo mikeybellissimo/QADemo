@@ -16,23 +16,23 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
 
-class StateExtractor:
+class LocationExtractor:
 
     
 
-    class State(BaseModel):
-        """Information about users activity within the inspection app."""
-        # ^ Doc-string for the entity Person.
-        # This doc-string is sent to the LLM as the description of the schema State,
+    class Location(BaseModel):
+        """Information about the physical location of interest for the user in the inspection app."""
+        # ^ Doc-string for the entity Location.
+        # This doc-string is sent to the LLM as the description of the schema Location,
         # and it can help to improve extraction results.
 
         # Note that:
         # 1. Each field is an `optional` -- this allows the model to decline to extract it!
         # 2. Each field has a `description` -- this description is used by the LLM.
         # Having a good description can help improve extraction results.
-        screen: Optional[str] = Field(default=None, description="The screen that the user should be directed to.")
-        issue_description: Optional[str] = Field(default=None, description="This is the description of an issue that a user provides, if the user provides one.")
-
+        jobsite: Optional[str] = Field(default=None, description="The jobsite/property/building that the user is located in or interested in.")
+        area: Optional[str] = Field(default=None, description="The area/room of the jobsite/property/building that the user is located in or interested in.")
+        
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 
@@ -88,18 +88,19 @@ class StateExtractor:
             return None
 
     def extract(user_input):
+        
         examples = [
             (
                 "I'm in overmountain inn room 203 and there's a bath with a crack in it",
-                StateExtractor.State(screen="create_event", issue_description="There is a bath with a crack in it."),
+                LocationExtractor.Location(jobsite="Overmountain Inn", area="Room 203"),
             ),
             (
                 "Take me home",
-                StateExtractor.State(screen="home"),
+                LocationExtractor.Location(),
             ),
             (
                 "Show me my current tasks",
-                StateExtractor.State(screen="display_tasks"),
+                LocationExtractor.Location(),
             ),
         ]
         
@@ -107,7 +108,7 @@ class StateExtractor:
 
         for text, tool_call in examples:
             messages.extend(
-                StateExtractor.tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
+                LocationExtractor.tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
             )
 
         
@@ -116,9 +117,8 @@ class StateExtractor:
                 (
                     "system",
                     "You are an expert extraction algorithm that extracts information for an application that facilitates building inspections. "
-                    "You must figure out what screen of the app the user wishes to go to. "
-                    "Select one of the following options: home, create_event, display_tasks. "
-                    "If an issue is referenced then briefly describe the relevant facts. "
+                    "First, you must see if the user references a jobsite which could be a building or a property. \n"
+                    "Next, you must see if the user references an area within the jobsite such as a room or outdoor area."
                     "Only extract relevant information from the text. "
                     "If you do not know the value of an attribute asked "
                     "to extract, return null for the attribute's value.",
@@ -135,18 +135,22 @@ class StateExtractor:
         llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key = openai_api_key)
         
         runnable = prompt | llm.with_structured_output(
-            schema=StateExtractor.State,
+            schema=LocationExtractor.Location,
             method="function_calling",
             include_raw=False,
         )
         resp =  runnable.invoke({"text": user_input, "examples": messages})
-               
+        
+       
+        
         
         # replace non-empty values in state
         new_values = resp.model_dump()
         for dict_key in new_values:
             
             if new_values[dict_key] != None:
-                st.session_state.user_state[dict_key] = new_values[dict_key]
+                
+                
+                st.session_state.location[dict_key] = new_values[dict_key]
 
 
