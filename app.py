@@ -1,17 +1,14 @@
 import streamlit as st
-from view_edit_event import view_edit_page
-from create_event import create_event_page
-from display_tasks import display_tasks_page
+from pages.view_edit_event import view_edit_page
+from pages.create_event import create_event_page
+from pages.display_tasks import display_tasks_page
 from css import run_css
 import custom_components
 from speech import speech_to_text
-from user_state import StateExtractor
-import pandas as pd 
-
+from extractors.user_state_extractor import StateExtractor
 
 # app setup
 run_css()
-
 
 # Initialization
 if "initialized" not in st.session_state:
@@ -22,6 +19,9 @@ if "initialized" not in st.session_state:
     st.session_state.user_state["screen"] = "display_tasks"
     st.session_state.user_state["issue_description"] = None
     
+    # Location Information
+    
+
     # Create New Issue State
     st.session_state["new_issue"] = {}
     st.session_state.new_issue["name"] = None

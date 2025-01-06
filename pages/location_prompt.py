@@ -1,5 +1,5 @@
 import streamlit as st
-from user_state import StateExtractor
+from user_state_extractor import StateExtractor
 from speech import speech_to_text
 from uuid import uuid4
 

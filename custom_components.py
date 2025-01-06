@@ -1,5 +1,5 @@
 import streamlit as st
-from location_prompt import prompt_for_location
+from pages.location_prompt import prompt_for_location
 
 def navbar():
     def set_jobsite():
@@ -17,5 +17,4 @@ def navbar():
     with st.container(key="locationHeader"):
         if st.button(str(st.session_state.user_state["jobsite"]) + " - " + str(str(st.session_state.user_state["area"]))):
             prompt_for_location()
-        #st.text_input("Jobsite: ",label_visibility="hidden",  value= str(st.session_state.user_state["jobsite"]), on_change=set_jobsite, key="raw_jobsite_text_input")
-        #st.text_input("Area: ", label_visibility="hidden",  value = str(st.session_state.user_state["area"]), on_change=set_area, key="raw_area_text_input")
+       
