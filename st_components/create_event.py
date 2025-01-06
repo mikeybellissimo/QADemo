@@ -2,7 +2,7 @@ import streamlit as st
 from speech import speech_to_text
 from extractors.issue_extractor import IssueExtractor
 
-from pages.location_prompt import prompt_for_location
+from st_components.location_prompt import prompt_for_location
 def create_event_page():
     def get_modified_raw_description():
         st.session_state.new_issue["new_event_description_raw"] = st.session_state["raw_description_text_area"]

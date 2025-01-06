@@ -1,13 +1,13 @@
 import streamlit as st
-from pages.view_edit_event import view_edit_page
-from pages.create_event import create_event_page
-from pages.display_tasks import display_tasks_page
+from st_components.view_edit_event import view_edit_page
+from st_components.create_event import create_event_page
+from st_components.display_tasks import display_tasks_page
 from css import run_css
 import custom_components
 from speech import speech_to_text
 from extractors.user_state_extractor import StateExtractor
 from extractors.location_extractor import LocationExtractor
-
+from extractors.query_extractor import QueryExtractor
 # app setup
 run_css()
 
@@ -67,6 +67,13 @@ if st.session_state.user_state["screen"] == "view_edit":
 
 if st.session_state.user_state['screen'] == "display_tasks":
     display_tasks_page()
+    audio = st.audio_input("Voice Assistant", key=f"audio_{st.session_state.audio_input_hack}")
+    if audio:
+        st.session_state.new_issue["audio"] = audio
+        LocationExtractor.extract(speech_to_text(audio))
+        QueryExtractor.extract(speech_to_text(audio))
+        st.session_state.audio_input_hack += 1 
+        st.rerun()
 
 # Example input
 # There is a big ass crack on the tv screen. The things still working thankfully but it looks like we got it that way when they shipped it. We should see if we can get a manufacturing warranty

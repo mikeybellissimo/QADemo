@@ -1,5 +1,5 @@
 import streamlit as st
-from pages.location_prompt import prompt_for_location
+from st_components.location_prompt import prompt_for_location
 
 def navbar():
     def set_jobsite():
