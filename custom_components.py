@@ -8,6 +8,14 @@ def navbar():
                         <div id = "navbarRight">User</div>
                     </div>''', unsafe_allow_html=True)
     with st.container(key="locationHeader"):
-        if st.button(str(st.session_state.location["jobsite"]) + " - " + str(st.session_state.location["area"])):
+        location_string = "Set Location"
+        if str(st.session_state.location["area"]) == "None":
+            if str(st.session_state.location["jobsite"]) != "None":
+                location_string = str(st.session_state.location["jobsite"]) 
+        else:
+            if str(st.session_state.location["jobsite"]) != "None":
+                location_string = str(st.session_state.location["jobsite"]) + " - " + str(st.session_state.location["area"])
+
+        if st.button(location_string):
             prompt_for_location()
        

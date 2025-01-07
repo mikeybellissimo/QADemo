@@ -9,7 +9,6 @@ def view_edit_page():
     st.session_state.new_issue["classification"] = st.text_input("Classification: " , value= str(st.session_state.new_issue["classification"]))
     st.session_state.new_issue["action_to_resolve"] = st.text_input("Action: " , value= str(st.session_state.new_issue["action_to_resolve"]))
     if st.session_state.new_issue["due_datetime"] == "":
-        print("NONEXISTENT")
         due_dt = (datetime.now() + timedelta(hours=24))
     else:
         try:

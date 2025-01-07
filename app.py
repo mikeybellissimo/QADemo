@@ -56,7 +56,7 @@ navbar = custom_components.navbar()
 
 #Routing 
 if st.session_state.user_state["screen"] == "home":
-    st.header("You are at the home screen.")
+    st.header("Placeholder Home Screen")
     audio = st.audio_input("Voice Assistant", key=f"audio_{st.session_state.audio_input_hack}")
     if audio:
         st.session_state.new_issue["audio"] = audio
