@@ -1,6 +1,6 @@
 import streamlit as st
-from st_components.view_edit_event import view_edit_page
-from st_components.create_event import create_event_page
+from st_components.view_edit_issue import view_edit_page
+from st_components.create_issue import create_issue_page
 from st_components.display_tasks import display_tasks_page
 from css import run_css
 import custom_components
@@ -56,16 +56,16 @@ navbar = custom_components.navbar()
 
 #Routing 
 if st.session_state.user_state["screen"] == "home":
+    st.header("You are at the home screen.")
     audio = st.audio_input("Voice Assistant", key=f"audio_{st.session_state.audio_input_hack}")
     if audio:
         st.session_state.new_issue["audio"] = audio
         StateExtractor.extract(speech_to_text(audio))
-        LocationExtractor.extract(speech_to_text(audio))
         st.session_state.audio_input_hack += 1 
         st.rerun()
 
-if st.session_state.user_state["screen"] == "create_event":
-    create_event_page()
+if st.session_state.user_state["screen"] == "create_issue":
+    create_issue_page()
 
 if st.session_state.user_state["screen"] == "view_edit":
     view_edit_page()

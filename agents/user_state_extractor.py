@@ -14,8 +14,9 @@ from langchain_core.messages import (
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
-
-
+# import extractors
+from agents.location_extractor import LocationExtractor
+from agents.query_extractor import QueryExtractor
 class StateExtractor:
 
     
@@ -31,8 +32,7 @@ class StateExtractor:
         # 2. Each field has a `description` -- this description is used by the LLM.
         # Having a good description can help improve extraction results.
         screen: Optional[str] = Field(default=None, description="The screen that the user should be directed to.")
-        issue_description: Optional[str] = Field(default=None, description="This is the description of an issue that a user provides, if the user provides one.")
-
+        
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 
@@ -91,7 +91,7 @@ class StateExtractor:
         examples = [
             (
                 "I'm in overmountain inn room 203 and there's a bath with a crack in it",
-                StateExtractor.State(screen="create_event", issue_description="There is a bath with a crack in it."),
+                StateExtractor.State(screen="create_issue"),
             ),
             (
                 "Take me home",
@@ -109,7 +109,7 @@ class StateExtractor:
             messages.extend(
                 StateExtractor.tool_example_to_messages({"input": text, "tool_calls": [tool_call]})
             )
-
+        
         
         prompt = ChatPromptTemplate.from_messages(
             [
@@ -117,7 +117,7 @@ class StateExtractor:
                     "system",
                     "You are an expert extraction algorithm that extracts information for an application that facilitates building inspections. "
                     "You must figure out what screen of the app the user wishes to go to. "
-                    "Select one of the following options: home, create_event, display_tasks. "
+                    "Select one of the following options: home, create_issue, display_tasks. "
                     "If an issue is referenced then briefly describe the relevant facts. "
                     "Only extract relevant information from the text. "
                     "If you do not know the value of an attribute asked "
@@ -149,4 +149,17 @@ class StateExtractor:
             if new_values[dict_key] != None:
                 st.session_state.user_state[dict_key] = new_values[dict_key]
 
+        LocationExtractor.extract(user_input)
 
+        # This is the section where we perform the additional steps that are required beyond just changing the screen
+        if new_values['screen'] == 'home':
+            # no additional behavior that won't be handled by the rest of the app
+            pass
+        
+        elif new_values['screen'] == 'display_tasks':
+            QueryExtractor.extract(user_input)
+
+        elif new_values['screen'] == 'create_issue':
+            # make it so that issue_description gets passed to the create_issue screen
+            st.session_state.user_state["issue_description"] = user_input
+        
