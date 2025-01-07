@@ -15,14 +15,14 @@ run_css()
 if "initialized" not in st.session_state:
     # User State Information
     st.session_state["user_state"] = {}
-    st.session_state.user_state["screen"] = "display_tasks"
+    st.session_state.user_state["screen"] = "home"
     st.session_state.user_state["issue_description"] = None
     
 
     # Location Information
     st.session_state["location"] = {}
-    st.session_state.location["jobsite"] = "Overmountain Inn"
-    st.session_state.location["area"] = "Lobby"
+    st.session_state.location["jobsite"] = None
+    st.session_state.location["area"] = None
 
     # Create New Issue State
     st.session_state["new_issue"] = {}

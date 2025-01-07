@@ -4,6 +4,7 @@ from speech import speech_to_text
 
 @st.dialog("Set Location")
 def prompt_for_location():
+    st.write("Please enter your location.")
     location_audio = st.audio_input("Describe the Issue", label_visibility="hidden", key=f"location_audio_{st.session_state.audio_input_hack}")
     if location_audio:
         LocationExtractor.extract(speech_to_text(location_audio))
