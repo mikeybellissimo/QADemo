@@ -5,9 +5,9 @@ from st_components.display_tasks import display_tasks_page
 from css import run_css
 import custom_components
 from speech import speech_to_text
-from extractors.user_state_extractor import StateExtractor
-from extractors.location_extractor import LocationExtractor
-from extractors.query_extractor import QueryExtractor
+from agents.user_state_extractor import StateExtractor
+from agents.location_extractor import LocationExtractor
+
 # app setup
 run_css()
 
@@ -18,6 +18,7 @@ if "initialized" not in st.session_state:
     st.session_state.user_state["screen"] = "display_tasks"
     st.session_state.user_state["issue_description"] = None
     
+
     # Location Information
     st.session_state["location"] = {}
     st.session_state.location["jobsite"] = "Overmountain Inn"
@@ -33,6 +34,10 @@ if "initialized" not in st.session_state:
     st.session_state.new_issue["new_event_description_raw"] = ""
     st.session_state.new_issue["due_datetime"] = None
     st.session_state.new_issue["audio"] = None
+
+    # Query
+    st.session_state['query'] = {}
+    st.session_state.query['select_query'] = "SELECT * FROM issue LIMIT 10"
 
     # App Operations Information
     st.session_state['initialized'] = True
@@ -67,13 +72,7 @@ if st.session_state.user_state["screen"] == "view_edit":
 
 if st.session_state.user_state['screen'] == "display_tasks":
     display_tasks_page()
-    audio = st.audio_input("Voice Assistant", key=f"audio_{st.session_state.audio_input_hack}")
-    if audio:
-        st.session_state.new_issue["audio"] = audio
-        LocationExtractor.extract(speech_to_text(audio))
-        QueryExtractor.extract(speech_to_text(audio))
-        st.session_state.audio_input_hack += 1 
-        st.rerun()
+    
 
 # Example input
 # There is a big ass crack on the tv screen. The things still working thankfully but it looks like we got it that way when they shipped it. We should see if we can get a manufacturing warranty

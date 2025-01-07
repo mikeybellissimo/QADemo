@@ -33,7 +33,7 @@ class IssueExtractor:
         classification: Optional[str] = Field(default=None, description="A classification of the subject of the described issue. The only possible values are: [Entry door, Internal door, Bathroom, Walls, Flooring, Ceiling, Furniture, Appliances, Window]. If the subject of the issue does not fall into one of these categories, assign 'Other'.")
         action_to_resolve: Optional[str] = Field(default=None, description="A classification of the appropriate action required to resolve the described issue. The only possible values are [Fix, Maintain, Replace, Review]. 'Review' should only be chosen if the user indicates it directly or if he appears uncertain to whether it will be an issue or not. If the issue is something that is not able to be resolved by easily fixing or maintaining it, such as a window with extensive glass damage, then it must be replaced.")
         due_datetime: Optional[str] = Field(default=None, description="The datetime the user specifies for when the issue must be resolved, if provided. The datetime should be specified as a string with the following format YYYY-MM-DDTHH:MM.")
-
+        
     class Example(TypedDict):
         """A representation of an example consisting of text input and expected tool calls.
 

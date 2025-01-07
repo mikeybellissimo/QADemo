@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 import streamlit as st
 import uuid
 from typing import Dict, List, TypedDict
-
+from datetime import datetime, timedelta
 from typing import Optional
 from langchain_core.messages import (
     AIMessage,
@@ -21,7 +21,7 @@ class QueryExtractor:
     
 
     class Query(BaseModel):
-        """Information about the user's desired query WHERE conditions for the inspection app."""
+        """Information about the SQLite query that will display the desired information from the 'issue' table to the user of the inspection application."""
         # ^ Doc-string for the entity Query.
         # This doc-string is sent to the LLM as the description of the schema Query,
         # and it can help to improve extraction results.
@@ -32,7 +32,7 @@ class QueryExtractor:
         # Having a good description can help improve extraction results.
 
         # We need a vector search to get the description and name searchable properly
-        where_clause: Optional[str] = Field(default=None, description="The WHERE clause that the SELECT statement will use.") 
+        select_query: Optional[str] = Field(default=None, description="The SELECT query that the application will use to display the requested information.") 
 
         
     class Example(TypedDict):
@@ -94,16 +94,16 @@ class QueryExtractor:
         examples = [
             (
                 "Show me all plumbing tasks in the Overmountain Inn",
-                QueryExtractor.Query("WHERE classification='Bathroom' AND jobsite='Overmountain Inn'"),
+                QueryExtractor.Query(select_query="SELECT * FROM issue WHERE classification='Bathroom' AND jobsite='Overmountain Inn'"),
             ),
             (
                 "All tasks",
-                QueryExtractor.Query(),
+                QueryExtractor.Query(select_query="SELECT * FROM issue"),
             ),
-            # (
-            #     "Show me my current tasks",
-            #     QueryExtractor.Query(),
-            # ),
+            (
+                "Show me the tasks due by next week",
+                QueryExtractor.Query(select_query="SELECT * FROM issue WHERE due_datetime<" + datetime.strptime(str(datetime.now() + timedelta(days=7))[:10] + "T12:00", "%Y-%m-%dT%H:%M").strftime("%Y-%m-%d") + ";"),
+            ),
         ]
         
         messages = []
@@ -118,11 +118,11 @@ class QueryExtractor:
             [
                 (
                     "system",
-                    "You are an expert SQL query writing algorithm that writes WHERE clauses for an application that helps with people who perform building inspections. "
-                    "You are to complete the where part of the query: 'SELECT * FROM issues ...'. \n"
+                    "You are an expert SQL query writing algorithm that writes SELECT statements for an application that helps with people who perform building inspections. "
                     "The available fields in the table are ['name', 'description', 'classification', 'action_to_resolve', 'due_datetime', 'jobsite', 'area']. \n"
                     "The 'classification' field can only be one of the following values: [Entry door, Internal door, Bathroom, Walls, Flooring, Ceiling, Furniture, Appliances, Window]. "
                     "The 'action_to_resolve' field can only be one of the following values: [Fix, Maintain, Replace, Review]"
+                    "NEVER output any data/schema modification queries so it should never try to drop, update, insert, alter, commit, etc. "
                     "Only extract relevant information from the text. "
                     "If you do not know the value of an attribute asked "
                     "to extract, return null for the attribute's value.",
@@ -145,7 +145,6 @@ class QueryExtractor:
         )
         resp =  runnable.invoke({"text": user_input, "examples": messages})
         
-       
         
         
         # replace non-empty values in state
@@ -153,8 +152,6 @@ class QueryExtractor:
         for dict_key in new_values:
             
             if new_values[dict_key] != None:
-                
-                
-                st.session_state.location[dict_key] = new_values[dict_key]
+                st.session_state.query[dict_key] = new_values[dict_key]
 
 

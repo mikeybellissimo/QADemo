@@ -1,6 +1,6 @@
 import streamlit as st
 from speech import speech_to_text
-from extractors.issue_extractor import IssueExtractor
+from agents.issue_extractor import IssueExtractor
 
 from st_components.location_prompt import prompt_for_location
 def create_event_page():

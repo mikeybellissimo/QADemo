@@ -1,5 +1,5 @@
 import streamlit as st
-from extractors.location_extractor import LocationExtractor
+from agents.location_extractor import LocationExtractor
 from speech import speech_to_text
 
 @st.dialog("Set Location")
